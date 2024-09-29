@@ -13,6 +13,10 @@
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.0",
-    "nodemon": "^3.1.7"
+    "express-flash": "^0.0.2",
+    "express-session": "^1.18.0",
+    "nodemon": "^3.1.7",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }
