@@ -11,7 +11,7 @@ const passport = require("passport");
 const flash = require("express-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
-const initializePassport = require("./passport"); // Import the Passport config
+const initializePassport = require("./passport");
 
 const app = express();
 
@@ -71,25 +71,26 @@ app.use(methodOverride("_method"));
 // Register POST
 app.post("/register", async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
 
-    // Inserting the new user into the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert the new user into the database
     db.query(
       "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
       [name, email, hashedPassword],
       (err, results) => {
         if (err) {
           console.error("Error inserting user into the database:", err.message);
-          return res.redirect("/register");
+          return res.redirect("/register"); // Redirect if there's an error
         }
         console.log("User registered successfully:", results.insertId);
-        res.redirect("/login");
+        res.redirect("/login"); // Redirect after successful registration
       }
     );
   } catch (e) {
     console.error("Registration error:", e);
-    res.redirect("/register");
+    res.redirect("/register"); // Redirect if there's an error
   }
 });
 
