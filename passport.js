@@ -1,24 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 
-function getUserByEmail(db, email) {
-  return new Promise((resolve, reject) => {
-    db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
-      if (err) return reject(err);
-      resolve(results[0]); // return the first user found same for id
-    });
-  });
-}
-
-function getUserById(db, id) {
-  return new Promise((resolve, reject) => {
-    db.query("SELECT * FROM users WHERE id = ?", [id], (err, results) => {
-      if (err) return reject(err);
-      resolve(results[0]);
-    });
-  });
-}
-
 function initialize(passport, getUserByEmail, getUserById) {
   const authenticateUsers = async (email, password, done) => {
     try {
@@ -33,17 +15,19 @@ function initialize(passport, getUserByEmail, getUserById) {
         return done(null, false, { message: "Incorrect password!" });
       }
     } catch (e) {
-      console.log(e);
       return done(e);
     }
   };
 
-  // username field can be customized to whatever you want
   passport.use(
     new LocalStrategy({ usernameField: "email" }, authenticateUsers)
   );
   passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id, done) => getUserById(id));
+  passport.deserializeUser((id, done) => {
+    getUserById(id)
+      .then((user) => done(null, user))
+      .catch((err) => done(err));
+  });
 }
 
 module.exports = initialize;
