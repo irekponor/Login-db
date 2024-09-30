@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(
   session({
-    secret: process.env.SECRET_KEY, // The secret_key can be named anything
+    secret: process.env.SECRET_KEY, // The secret_key can be named anything you want brrr
     resave: false,
     saveUninitialized: false,
   })
@@ -101,7 +101,7 @@ app.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs");
 });
 
-// Logout functionality
+// Logout functionality code
 app.delete("/logout", (req, res) => {
   req.logout(req.user, (err) => {
     if (err) return next(err);
