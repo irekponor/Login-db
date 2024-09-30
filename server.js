@@ -67,13 +67,13 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const { name, email } = req.body;
 
-    // Insert the new user into the database
+    // Inserting the new user into the database
     db.query(
       "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
       [name, email, hashedPassword],
       (err, results) => {
         if (err) {
-          console.error(err);
+          console.error("Error inserting user:", err);
           return res.redirect("/register");
         }
         console.log("User registered:", results.insertId);
@@ -81,7 +81,7 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
       }
     );
   } catch (e) {
-    console.log(e);
+    console.error("Registration error:", e);
     res.redirect("/register");
   }
 });
