@@ -6,7 +6,7 @@ function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
     db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
       if (err) return reject(err);
-      resolve(results[0]);
+      resolve(results[0]); // Return the first user found
     });
   });
 }
@@ -16,7 +16,6 @@ function initialize(passport, getUserByEmail, getUserById) {
   const authenticateUsers = async (email, password, done) => {
     try {
       // Await the promise to get the user by email
-
       const user = await getUserByEmail(email);
 
       if (user == null) {

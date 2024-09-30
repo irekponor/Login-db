@@ -126,5 +126,7 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
+module.exports = { db };
+
 // Start the server
 app.listen(2991);
