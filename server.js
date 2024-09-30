@@ -80,10 +80,10 @@ app.post("/register", async (req, res) => {
       [name, email, hashedPassword],
       (err, results) => {
         if (err) {
-          console.error("Error inserting user:", err);
+          console.error("Error inserting user into the database:", err.message);
           return res.redirect("/register");
         }
-        console.log("User registered:", results.insertId);
+        console.log("User registered successfully:", results.insertId);
         res.redirect("/login");
       }
     );
