@@ -1,5 +1,4 @@
 // Load .env variables
-
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -7,7 +6,6 @@ if (process.env.NODE_ENV !== "production") {
 // Importing installed libraries
 const express = require("express");
 const mysql = require("mysql2");
-const app = express();
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const initializePassport = require("./passport");
@@ -15,23 +13,7 @@ const flash = require("express-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
 
-// Initialize passport for authentication
-initializePassport(passport, db);
-
-const users = [];
-
-app.use(express.urlencoded({ extended: false }));
-app.use(flash());
-app.use(
-  session({
-    secret: process.env.SECRET_KEY, // The secret_key can be anything asin it can be named anything
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(methodOverride("_method"));
+const app = express();
 
 // Start a connection to the database
 const db = mysql.createConnection({
@@ -50,7 +32,27 @@ db.connect((err) => {
   console.log("Connected to database.");
 });
 
-// Login POST
+// Initialize passport for authentication
+initializePassport(
+  passport,
+  (email) => getUserByEmail(db, email),
+  (id) => getUserById(db, id)
+);
+
+app.use(express.urlencoded({ extended: false }));
+app.use(flash());
+app.use(
+  session({
+    secret: process.env.SECRET_KEY, // The secret_key can be named anything
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(methodOverride("_method"));
+
+// Login POST route
 app.post(
   "/login",
   checkNotAuthenticated,
@@ -61,7 +63,7 @@ app.post(
   })
 );
 
-// Register POST
+// Register POST route
 app.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -107,7 +109,7 @@ app.delete("/logout", (req, res) => {
   });
 });
 
-// Authentication check
+// Authentication checks
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -122,7 +124,7 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
-module.exports = { db };
-
 // Start the server
 app.listen(2991);
+
+module.exports = { db };
