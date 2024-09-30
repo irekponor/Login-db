@@ -16,11 +16,7 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 
 // Initialize passport for authentication
-initializePassport(
-  passport,
-  (email) => users.find((user) => user.email === email),
-  (id) => users.find((user) => user.id === id)
-);
+initializePassport(passport, db);
 
 const users = [];
 
