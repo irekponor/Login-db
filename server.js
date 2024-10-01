@@ -104,10 +104,17 @@ app.post(
   })
 );
 
-// Routes
+// test db
 app.get("/nodejs", (req, res) => {
-  const sql = "SELECT * FROM STUDENTS";
+  const sql = "SELECT * FROM USERS";
+  db.query(sql, (err, data) => {
+    if (err) return res.json("Error");
+    return res.json(data);
+  });
 });
+
+//Routes
+
 app.get("/", checkAuthenticated, (req, res) => {
   res.render("index.ejs", { name: req.user.name });
 });
