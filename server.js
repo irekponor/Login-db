@@ -105,6 +105,9 @@ app.post(
 );
 
 // Routes
+app.get("/nodejs", (req, res) => {
+  const sql = "SELECT * FROM STUDENTS";
+});
 app.get("/", checkAuthenticated, (req, res) => {
   res.render("index.ejs", { name: req.user.name });
 });
@@ -141,6 +144,6 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 // Start the server
-app.listen(2991, () => {
-  console.log("Server started on port 2991");
+app.listen(8890, () => {
+  console.log("listening.....");
 });
